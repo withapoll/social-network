@@ -1,0 +1,118 @@
+{
+  "info": {
+    "name": "Социальная сеть — заготовка (ДЗ)",
+    "description": "Коллекция для проверки ДЗ «Заготовка для социальной сети». Эндпоинты: /user/register, /login, /user/get/{id}. Базовый URL и токен хранятся в переменных коллекции — токен подставляется автоматически после запроса Login.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" },
+    { "key": "user_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{base_url}}/user/register", "host": ["{{base_url}}"], "path": ["user", "register"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"first_name\": \"Иван\",\n  \"second_name\": \"Петров\",\n  \"birthdate\": \"1995-06-15\",\n  \"gender\": \"male\",\n  \"interests\": \"музыка, бег, программирование\",\n  \"city\": \"Москва\",\n  \"password\": \"secret123\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var data = pm.response.json();",
+              "if (data.user_id) { pm.collectionVariables.set('user_id', data.user_id); }",
+              "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": {{user_id}},\n  \"password\": \"secret123\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var data = pm.response.json();",
+              "if (data.token) { pm.collectionVariables.set('token', data.token); }",
+              "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('has token', function () { pm.expect(data.token).to.be.a('string'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get user by id",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": {
+          "raw": "{{base_url}}/user/get/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["user", "get", "{{user_id}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('returns profile', function () { pm.expect(pm.response.json().first_name).to.be.a('string'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get user by id — без токена (ожидаем 401)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/user/get/{{user_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["user", "get", "{{user_id}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('status 401', function () { pm.response.to.have.status(401); });"],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+      }
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Социальная сеть — заготовка</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="wrap">
+    <h1>Социальная сеть</h1>
+
+    <div class="tabs">
+        <button id="tab-register" class="active" onclick="showTab('register')">Регистрация</button>
+        <button id="tab-login" onclick="showTab('login')">Вход</button>
+        <button id="tab-profile" onclick="showTab('profile')">Анкета</button>
+    </div>
+
+    <!-- Регистрация -->
+    <div id="card-register" class="card">
+        <label>Имя</label>
+        <input id="reg-first">
+        <label>Фамилия</label>
+        <input id="reg-second">
+        <label>Дата рождения</label>
+        <input id="reg-birth" type="date">
+        <label>Пол</label>
+        <select id="reg-gender">
+            <option value="">— не указан —</option>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+        </select>
+        <label>Интересы</label>
+        <input id="reg-interests">
+        <label>Город</label>
+        <input id="reg-city">
+        <label>Пароль (минимум 6 символов)</label>
+        <input id="reg-password" type="password">
+        <button class="primary" onclick="register()">Зарегистрироваться</button>
+        <div id="reg-msg"></div>
+    </div>
+
+    <!-- Вход -->
+    <div id="card-login" class="card hidden">
+        <label>ID пользователя</label>
+        <input id="login-id" type="number">
+        <label>Пароль</label>
+        <input id="login-password" type="password">
+        <button class="primary" onclick="login()">Войти</button>
+        <div id="login-msg"></div>
+        <div id="login-token" class="token-box"></div>
+    </div>
+
+    <!-- Просмотр анкеты -->
+    <div id="card-profile" class="card hidden">
+        <label>ID пользователя</label>
+        <input id="profile-id" type="number">
+        <button class="primary" onclick="loadProfile()">Показать анкету</button>
+        <div id="profile-msg"></div>
+        <div id="profile-data"></div>
+    </div>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
